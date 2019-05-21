@@ -3,7 +3,7 @@
  *
  *  Author   : Ryan Chen
  *  Reference: Hank Hsiao
- *  Version  : 1.0.9
+ *  Version  : 1.0.10
  *  Create   : 2018.07.31
  *  Update   : 2019.05.21
  *  License  : MIT
@@ -483,7 +483,6 @@ var Tools = (function(window) {
         MenuFactory.init();
 
         return MenuFactory;
-        console.log('Run menuFactory');
     };
 
     return {
