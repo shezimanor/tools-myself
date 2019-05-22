@@ -3,9 +3,9 @@
  *
  *  Author   : Ryan Chen
  *  Reference: Hank Hsiao
- *  Version  : 1.0.10
+ *  Version  : 1.0.11
  *  Create   : 2018.07.31
- *  Update   : 2019.05.21
+ *  Update   : 2019.05.22
  *  License  : MIT
  */
 
@@ -431,18 +431,18 @@ var Tools = (function(window) {
      * menu 工廠
      * @param  {Object} btn1 按鈕(開)
      * @param  {Object} btn2 按鈕(關)
-     * @param  {Object} container 對象容器
-     * @param  {String} toggleClassName 用來切換的 class 名稱， 通常是'hide'
+     * @param  {Function} onFn 啟動fn
+     * @param  {Function} offFn 關閉fn
+     * @param  {Function} beforeInitFn init前fn
      * @return {Object} MenuFactory 物件
      */
-    var menuFactory = function (btn1, btn2, container, toggleClassName) {
+    var menuFactory = function (btn1, btn2, onFn, offFn, beforeInitFn) {
         
         // FSM
         var Menu = function () {
-            this.currState = FSM.off;
+            this.currState = FSM.on;
             this.btn1 = btn1;
             this.btn2 = btn2;
-            this.container = container;
         };
 
         Menu.prototype.init = function () {
@@ -458,25 +458,20 @@ var Tools = (function(window) {
         var FSM = {
             on: {
                 btnBePress: function () {
-                    this.container.classList.add(toggleClassName);
                     this.currState = FSM.off;
-                    this.btn1.classList.remove(toggleClassName);
-                    this.btn2.classList.add(toggleClassName);
+                    onFn();
                 }
             },
             off: {
                 btnBePress: function () {
-                    this.container.classList.remove(toggleClassName);
                     this.currState = FSM.on;
-                    this.btn1.classList.add(toggleClassName);
-                    this.btn2.classList.remove(toggleClassName);
+                    offFn();
                 }
             }
         };
 
         // before init setting
-        btn2.classList.add(toggleClassName);
-        container.classList.add(toggleClassName);
+        beforeInitFn && beforeInitFn();
 
         // init Menu
         var MenuFactory = new Menu();
