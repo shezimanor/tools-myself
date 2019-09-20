@@ -3,9 +3,9 @@
  *
  *  Author   : Ryan Chen
  *  Reference: Hank Hsiao
- *  Version  : 1.0.11
+ *  Version  : 1.1.0
  *  Create   : 2018.07.31
- *  Update   : 2019.05.22
+ *  Update   : 2019.09.20
  *  License  : MIT
  */
 
@@ -292,6 +292,14 @@ var Tools = (function(window) {
     };
 
     /**
+     * [刪除 Cookie]
+     * @param  {String} cname Cookie 名稱
+     */
+    var delCookie = function (cname) {
+        document.cookie = cname + "=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/";
+    };
+
+    /**
      * [取得Cookie]
      * @param  {String} cname Cookie 名稱
      * @return {String} Cookie 值
@@ -367,20 +375,25 @@ var Tools = (function(window) {
      * @param  {Number} duration 毫秒
      * @param  {String} easeName 預設'linear'
      */
-    var winScrollTo = function(el,duration,easeName) {
+    var winScrollTo = function(el,duration,easeName,buffer) {
         var curPostion = window.scrollY;
-        var targetElOffsetTop = window.scrollY + document.getElementById(el).getBoundingClientRect().top;
+        var n = (buffer) ? buffer : 0;
+        var targetElOffsetTop = (el === 'body') ? 0 : (window.scrollY + document.getElementById(el).getBoundingClientRect().top + n);
         var easeFn = easeName ? easeName : 'linear';
         var easingObj = {
-            linear: function(t) {
-                return t;
-            },
-            circ: function(t) {
-                return 1 - Math.sin(Math.acos(t));
-            },
-            quad: function(t) { // 2可以換
-                return Math.pow(t, 2);
-            },
+            linear: function (t) { return t },
+            easeInQuad: function (t) { return t*t },
+            easeOutQuad: function (t) { return t*(2-t) },
+            easeInOutQuad: function (t) { return t<.5 ? 2*t*t : -1+(4-2*t)*t },
+            easeInCubic: function (t) { return t*t*t },
+            easeOutCubic: function (t) { return (--t)*t*t+1 },
+            easeInOutCubic: function (t) { return t<.5 ? 4*t*t*t : (t-1)*(2*t-2)*(2*t-2)+1 },
+            easeInQuart: function (t) { return t*t*t*t },
+            easeOutQuart: function (t) { return 1-(--t)*t*t*t },
+            easeInOutQuart: function (t) { return t<.5 ? 8*t*t*t*t : 1-8*(--t)*t*t*t },
+            easeInQuint: function (t) { return t*t*t*t*t },
+            easeOutQuint: function (t) { return 1+(--t)*t*t*t*t },
+            easeInOutQuint: function (t) { return t<.5 ? 16*t*t*t*t*t : 1+16*(--t)*t*t*t*t },
             bounce: function(t) {
                 for (let a = 0, b = 1, result; 1; a += b, b /= 2) {
                     if (t >= (7 - 4 * a) / 11) {
@@ -431,18 +444,18 @@ var Tools = (function(window) {
      * menu 工廠
      * @param  {Object} btn1 按鈕(開)
      * @param  {Object} btn2 按鈕(關)
-     * @param  {Function} onFn 啟動fn
-     * @param  {Function} offFn 關閉fn
-     * @param  {Function} beforeInitFn init前fn
+     * @param  {Object} container 對象容器
+     * @param  {String} toggleClassName 用來切換的 class 名稱， 通常是'hide'
      * @return {Object} MenuFactory 物件
      */
-    var menuFactory = function (btn1, btn2, onFn, offFn, beforeInitFn) {
+    var menuFactory = function (btn1, btn2, container, toggleClassName) {
         
         // FSM
         var Menu = function () {
-            this.currState = FSM.on;
+            this.currState = FSM.off;
             this.btn1 = btn1;
             this.btn2 = btn2;
+            this.container = container;
         };
 
         Menu.prototype.init = function () {
@@ -458,20 +471,25 @@ var Tools = (function(window) {
         var FSM = {
             on: {
                 btnBePress: function () {
+                    this.container.classList.add(toggleClassName);
                     this.currState = FSM.off;
-                    onFn();
+                    this.btn1.classList.remove(toggleClassName);
+                    this.btn2.classList.add(toggleClassName);
                 }
             },
             off: {
                 btnBePress: function () {
+                    this.container.classList.remove(toggleClassName);
                     this.currState = FSM.on;
-                    offFn();
+                    this.btn1.classList.add(toggleClassName);
+                    this.btn2.classList.remove(toggleClassName);
                 }
             }
         };
 
         // before init setting
-        beforeInitFn && beforeInitFn();
+        btn2.classList.add(toggleClassName);
+        container.classList.add(toggleClassName);
 
         // init Menu
         var MenuFactory = new Menu();
@@ -495,6 +513,7 @@ var Tools = (function(window) {
         animationEnd: animationEnd,
         setCookie: setCookie,
         setCookie2: setCookie2,
+        delCookie: delCookie,
         getCookie: getCookie,
         afs: afs,
         coordinate: coordinate,
