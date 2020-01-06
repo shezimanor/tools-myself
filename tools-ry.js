@@ -3,9 +3,9 @@
  *
  *  Author   : Ryan Chen
  *  Reference: Hank Hsiao
- *  Version  : 1.1.0
+ *  Version  : 1.1.1
  *  Create   : 2018.07.31
- *  Update   : 2019.09.20
+ *  Update   : 2020.01.06
  *  License  : MIT
  */
 
@@ -169,9 +169,9 @@ var Tools = (function(window) {
     /**
      * [判斷是否為行動裝置]
      */
-    var isMobile = userAgent.match(/iPhone/i) || userAgent.match(/iPod/i) || userAgent.match(/Android/i) ? true : false;
+    var isMobile = userAgent.match(/iPhone/i) || userAgent.match(/iPod/i) || userAgent.match(/iPad/i) || userAgent.match(/Android/i) ? true : false;
     
-    var isiOS = userAgent.match(/iPhone/i) || userAgent.match(/iPod/i) ? true : false;
+    var isiOS = userAgent.match(/iPhone/i) || userAgent.match(/iPod/i) || userAgent.match(/iPad/i) ? true : false;
 
     /**
      * [判斷是否為line 或是 fb]
