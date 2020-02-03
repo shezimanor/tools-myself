@@ -3,9 +3,9 @@
  *
  *  Author   : Ryan Chen
  *  Reference: Hank Hsiao
- *  Version  : 1.1.1
+ *  Version  : 1.1.2
  *  Create   : 2018.07.31
- *  Update   : 2020.01.06
+ *  Update   : 2020.02.03
  *  License  : MIT
  */
 
@@ -180,6 +180,12 @@ var Tools = (function(window) {
     var isInapp = userAgent.toLowerCase().match(/fb/i) || userAgent.toLowerCase().match(/line/i);
 
     /**
+     * [判斷是否為line]
+     * @type {Boolean}
+     */
+    var isLineInapp = userAgent.toLowerCase().match(/line/i);
+
+    /**
      * [行動裝置的 touch 事件字串，若不是行動裝置，取得 mouse 事件字串]
      */
     var Event = (function () {
@@ -271,7 +277,7 @@ var Tools = (function(window) {
      */
     var setCookie = function(cname, cvalue, exdays) {
         var d = new Date();
-        d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
+        d.setTime(d.getTime() + (((exdays * 24) + 8) * 60 * 60 * 1000));
         var expires = "expires="+d.toUTCString();
         cvalue = encodeURIComponent(cvalue);
         document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
@@ -507,6 +513,7 @@ var Tools = (function(window) {
         isMobile: isMobile,
         isiOS: isiOS,
         isInapp: isInapp,
+        isLineInapp: isLineInapp,
         Event: Event,
         shuffleSelf: shuffleSelf,
         deepCopy: deepCopy,
